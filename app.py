@@ -2,12 +2,19 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
+import os
 
 # Function to fetch movie poster
+
+
 def fetch_poster(movie_id):
     try:
+        API_KEY = os.getenv("TMDB_API_KEY")  # Fetch API key from environment variable
+        if not API_KEY:
+            return "https://via.placeholder.com/300x450?text=Missing+API+Key"
+
         response = requests.get(
-            f'https://api.themoviedb.org/3/movie/{movie_id}?api_key=7bd9dd4627d7ac2c386b1be4a005ebae',
+            f'https://api.themoviedb.org/3/movie/{movie_id}?api_key={API_KEY}',
             timeout=5
         )
         response.raise_for_status()
@@ -20,6 +27,7 @@ def fetch_poster(movie_id):
     except Exception as e:
         print(f"Error fetching poster for movie_id {movie_id}: {e}")
         return "https://via.placeholder.com/300x450?text=Error"
+
 
 # Function to recommend similar movies
 def recommend(movie):
