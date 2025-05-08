@@ -37,9 +37,14 @@ def recommend(movie):
 
     return recommended_movies, recommended_movies_posters
 
-# Load data
-similarity = pickle.load(open('similarity.pkl', 'rb'))
-movies = pickle.load(open('movies.pkl', 'rb'))
+# Load the movie data and similarity matrix from pickle files
+try:
+    similarity = pickle.load(open('similarity.pkl', 'rb'))
+    movies = pickle.load(open('movies.pkl', 'rb'))
+except FileNotFoundError:
+    st.error("Pickle files (similarity.pkl and movies.pkl) are missing. Please check.")
+    st.stop()
+
 movies_list_name = movies['title'].values
 
 # Streamlit UI setup
@@ -98,22 +103,25 @@ selected_movie_name = st.selectbox('Select a Movie to recommend', movies_list_na
 
 # Recommendation output
 if st.button('Recommend Movie'):
-    recommendations, posters = recommend(selected_movie_name)
+    if selected_movie_name:
+        recommendations, posters = recommend(selected_movie_name)
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+        col1, col2, col3, col4, col5 = st.columns(5)
 
-    with col1:
-        st.markdown(f"### {recommendations[0]}")
-        st.image(posters[0])
-    with col2:
-        st.markdown(f"### {recommendations[1]}")
-        st.image(posters[1])
-    with col3:
-        st.markdown(f"### {recommendations[2]}")
-        st.image(posters[2])
-    with col4:
-        st.markdown(f"### {recommendations[3]}")
-        st.image(posters[3])
-    with col5:
-        st.markdown(f"### {recommendations[4]}")
-        st.image(posters[4])
+        with col1:
+            st.markdown(f"### {recommendations[0]}")
+            st.image(posters[0])
+        with col2:
+            st.markdown(f"### {recommendations[1]}")
+            st.image(posters[1])
+        with col3:
+            st.markdown(f"### {recommendations[2]}")
+            st.image(posters[2])
+        with col4:
+            st.markdown(f"### {recommendations[3]}")
+            st.image(posters[3])
+        with col5:
+            st.markdown(f"### {recommendations[4]}")
+            st.image(posters[4])
+    else:
+        st.error("Please select a movie to get recommendations.")
